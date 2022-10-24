@@ -8,6 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 
 import com.example.tiendajpa.model.Categoria;
 import com.example.tiendajpa.repository.CategoriasRepository;
@@ -30,7 +33,40 @@ public class TiendajpaApplication implements CommandLineRunner{
 		// TODO Auto-generated method stub
 		// guardar();-- buscarPorId();-- modificar();-- eliminar(); --- conteo(); --- eliminarTodos();
 		//encontrarPorIds(); -- buscarTodos(); -- existeId(); -- guardarTodas(); ---buscarTodosJpa()
-		borrarTodoEnBloque();
+		buscarTodosPaginacionOrdenados();
+	}
+	/**
+	 *  Metodo findAll [Con Paginacion y Ordenados] - Interfaz PagingAndStortingRepository
+	 */
+	private void buscarTodosPaginacionOrdenados() {
+		Page<Categoria> page = repo.findAll(PageRequest.of(0, 5,Sort.by("nombre").descending()));
+		System.out.println("Total Registros: " + page.getTotalElements());
+		System.out.println("Total Paginas: " + page.getTotalPages());
+		for (Categoria c : page.getContent()) {
+			System.out.println(c.getId() + " " + c.getNombre());
+		}
+	}
+	
+	/**
+	 *  Metodo findAll [Con paginación] - Interfaz PagingAndStortingRepository 
+	 */
+	private void buscarTodosPaginacion() {
+		Page<Categoria> page = repo.findAll(PageRequest.of(0, 5));
+		System.out.println("Total Registros: " + page.getTotalElements());
+		System.out.println("Total Paginas: " + page.getTotalPages());
+		for (Categoria c : page.getContent()) {
+			System.out.println(c.getId() + " " + c.getNombre());
+		}
+	}
+	
+	/**
+	 *  Metodo findAll [Ordenados por un campo] - Interfaz PagingAndStortingRepository
+	 */
+	private void buscarTodosOrdenados() {
+		List<Categoria> categorias = repo.findAll(Sort.by("nombre").descending());
+		for (Categoria c : categorias) {
+			System.out.println(c.getId() + " " + c.getNombre());
+		}
 	}
 	
 	/* Metodo deleteAllInBatch [Usar con precaución] - Interfaz JpaRepository*/
